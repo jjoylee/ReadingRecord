@@ -77,3 +77,35 @@ public class JdbcContext {
     }
 }   
 ```
+
+템플릿/콜백 패턴 : 전략 패턴의 기본 구조에 익명 내부 클래스를 활용 ( 매번 메소드 단위로 사용할 오브젝트를 새롭게 전달받는다. )   
+주로 try catch finally 블록을 사용하는 코드에 적용할 수 있다.   
+콜백 : 실행되는 것을 목적으로 다른 오브젝트의 메소드에 전달되는 오브젝트 
+ 
+``` java
+public class UserDao {
+    // client
+    public void add(final User user) throws SQLException{
+        // workWithStatementStrategy = 템플릿 메소드
+        this.jdbcContext.workWithStatementStrategy(
+            // callback object
+            // workWithStatemetStrategy 메소드에서 StatementStrategy의 makePreparedStatement 메소드 호출
+                new StatementStrategy() {
+                    @Override
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                    }
+                }
+        );
+    }
+}
+```
+
+하지만 DAO 메소드에서 매번 익명 내부 클래스를 사용해서 상대적으로 코드를 작성하고 읽기가 불편하다.   
+콜백 오브젝트를 보면 쿼리만 바뀔 뿐 PreparedStatement를 만드는 것은 동일하다.   
+바뀌는 sql문장만 파라미터로 받을 수 있게 executeSql 메소드를 생성할 수 있다. (재활용 가능한 콜백을 담은 메소드)   
+콜백 인스턴스를 제너릭스로 만들면 다양한 타입을 지원할 수 있다.   
+
+JdbcTemplate : JDBC 코드용 기본 템플릿    
+1. update() : insert, delete, update 쿼리 실행 시 사용  
+2. queryForObject() : select 문에서 사용, 결과를 RowMapper 콜백을 이용해서 오브젝트에 매핑, 한 개의 로우만 얻을 때  
+3. query() : select 문에서 사용 여러 개의 로우가 결과를 나오는 경우에 사용  
