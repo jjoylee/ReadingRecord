@@ -65,7 +65,7 @@ private Object invokeInTransaction(Method method, Object[] args) throws Throwabl
 }
 ```
 
-#### 프록시 팩토리 빈
+### 프록시 팩토리 빈
 
 - 스프링을 대신해서 오브젝트의 생성로직을 담당하도록 만들어진 특별한 빈
 - 스프링은 FactoryBean 인터페이스를 구현한 클래스가 빈의 클래스로 지정되면, 팩토리 빈 클래스의 오브젝트의 getObject() 메소드를 이용해 오브젝트를 가져오고, 이를 빈 오브젝트로 사용한다.
